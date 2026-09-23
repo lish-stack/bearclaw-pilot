@@ -362,10 +362,16 @@ function CustomDropdown({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full bg-white border border-slate/[0.55] rounded flex items-center justify-between px-4 py-3 text-ink text-base"
+        className={`w-full bg-white border rounded flex items-center justify-between px-4 py-3 text-ink text-base transition-colors ${
+          open ? 'border-rust' : 'border-slate/[0.55]'
+        }`}
       >
         <span className="truncate text-left">{selected?.label}</span>
-        <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 ml-2" fill="none">
+        <svg
+          viewBox="0 0 16 16"
+          className={`h-4 w-4 shrink-0 ml-2 transition-transform ${open ? 'rotate-180' : ''}`}
+          fill="none"
+        >
           <path d="M4 6l4 4 4-4" stroke="#4a4e55" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
