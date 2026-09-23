@@ -438,10 +438,10 @@ function Explore() {
     <section id="explore" className="bg-white border border-slate/[0.1] rounded-lg p-8 flex flex-col gap-6 scroll-mt-16">
       <SectionHeading>Explore a scenario</SectionHeading>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center min-w-0">
+      <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center min-w-0">
         <CustomDropdown value={selectedId} options={dropdownOptions} onChange={setSelectedId} />
 
-        <div className="flex items-start gap-0 border border-ink/[0.55] rounded-full p-1 sm:p-1.5 shrink-0 max-w-full overflow-x-auto">
+        <div className="flex items-start gap-0 border border-ink/[0.55] rounded-full p-1 sm:p-1.5 shrink-0 w-full lg:w-auto overflow-x-auto">
           {availableModels.map((m) => (
             <button
               key={m}
