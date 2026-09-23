@@ -611,7 +611,7 @@ function Footer() {
 
 export default function App() {
   return (
-    <div className="bg-cloud min-h-screen flex flex-col overflow-x-hidden">
+    <div className="bg-cloud min-h-screen flex flex-col overflow-x-clip">
       <NavBar />
       <Hero />
       <main className="flex flex-col gap-12 px-4 sm:px-16 pt-12 pb-20 max-w-[1280px] mx-auto w-full">
