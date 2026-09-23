@@ -358,7 +358,7 @@ function CustomDropdown({
   }, [])
 
   return (
-    <div className="relative flex-1" ref={ref}>
+    <div className="relative flex-1 min-w-0" ref={ref}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
