@@ -438,15 +438,15 @@ function Explore() {
     <section id="explore" className="bg-white border border-slate/[0.1] rounded-lg p-8 flex flex-col gap-6 scroll-mt-16">
       <SectionHeading>Explore a scenario</SectionHeading>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center min-w-0">
         <CustomDropdown value={selectedId} options={dropdownOptions} onChange={setSelectedId} />
 
-        <div className="flex items-start gap-0 border border-ink/[0.55] rounded-full p-1.5 shrink-0">
+        <div className="flex items-start gap-0 border border-ink/[0.55] rounded-full p-1 sm:p-1.5 shrink-0 max-w-full overflow-x-auto">
           {availableModels.map((m) => (
             <button
               key={m}
               onClick={() => setModelA(m)}
-              className={`px-3 py-2 rounded-full text-xs font-medium uppercase transition-colors ${modelA === m ? 'bg-ink text-white' : 'text-ink'}`}
+              className={`px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium uppercase transition-colors whitespace-nowrap shrink-0 ${modelA === m ? 'bg-ink text-white' : 'text-ink'}`}
             >
               {exploreData.modelLabels[m]}
             </button>
@@ -611,7 +611,7 @@ function Footer() {
 
 export default function App() {
   return (
-    <div className="bg-cloud min-h-screen flex flex-col">
+    <div className="bg-cloud min-h-screen flex flex-col overflow-x-hidden">
       <NavBar />
       <Hero />
       <main className="flex flex-col gap-12 px-4 sm:px-16 pt-12 pb-20 max-w-[1280px] mx-auto w-full">
