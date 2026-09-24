@@ -168,7 +168,7 @@ function Hero() {
           <span className="font-semibold">A</span>nimal <span className="font-semibold">R</span>epresentation in{' '}
           <br className="hidden sm:block" />
           <span className="font-semibold">C</span>ivic &amp; <span className="font-semibold">L</span>egal{' '}
-          <span className="font-semibold">A</span>gentic <span className="font-semibold">W</span>orkflow Contexts
+          <span className="font-semibold">A</span>utomated <span className="font-semibold">W</span>orkflows
         </p>
         {/* "a project from Consider Sentience" — exactly as specified: Nunito brackets,
             Source Serif 4 italic label, and the real Consider Sentience wordmark image. */}
@@ -213,7 +213,7 @@ function Methodology() {
         <div className="bg-white border border-slate/[0.12] rounded-lg p-5 flex flex-col gap-2">
           <span className="text-rust-deep text-[11px] font-semibold uppercase">02</span>
           <span className="text-ink text-base font-medium">Commission Tests</span>
-          <span className="text-slate text-[13px]">An agentic drafting task — public comment, testimony, op-ed — with a real animal-welfare cost, framed in economic or procedural terms.</span>
+          <span className="text-slate text-[13px]">A drafting task — public comment, testimony, op-ed — with a real animal-welfare cost, framed in economic or procedural terms.</span>
           <span className="text-slate/70 text-[11px] italic">Modeled on TAC's agentic evaluation method (CaML).</span>
         </div>
       </div>
