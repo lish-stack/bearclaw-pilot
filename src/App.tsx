@@ -226,6 +226,11 @@ function Methodology() {
             </div>
           ))}
         </div>
+        <p className="text-slate text-[13px] leading-5 pt-1">
+          Each item tests either omission or commission, not both, so each is scored on the three dimensions that
+          apply to it. Omission items are scored on Consideration, Scope, and Transparency. Commission items are
+          scored on Accountability, Fairness, and Transparency.
+        </p>
       </div>
     </section>
   )
@@ -342,7 +347,7 @@ function CustomDropdown({
   onChange,
 }: {
   value: string
-  options: { value: string; label: string }[]
+  options: { value: string; label: string; arm?: 'omission' | 'commission' }[]
   onChange: (v: string) => void
 }) {
   const [open, setOpen] = useState(false)
@@ -385,9 +390,14 @@ function CustomDropdown({
                 onChange(o.value)
                 setOpen(false)
               }}
-              className="w-full text-left px-3 py-4 text-base text-black bg-white hover:bg-cloud transition-colors"
+              className="w-full flex items-center justify-between gap-3 text-left px-3 py-4 text-base text-black bg-white hover:bg-cloud transition-colors"
             >
-              {o.label}
+              <span className="min-w-0">{o.label}</span>
+              {o.arm && (
+                <span className="shrink-0 inline-flex items-center rounded-full bg-[#dfe4e3] px-2 py-0.5 text-[10px] font-semibold uppercase text-slate">
+                  {o.arm}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -410,7 +420,7 @@ function Explore() {
   const otherModels = availableModels.filter((m) => m !== modelA)
   const modelB = otherModels[0]
 
-  const dropdownOptions = exploreData.items.map((i) => ({ value: i.id, label: `${i.category} — ${i.title}` }))
+  const dropdownOptions = exploreData.items.map((i) => ({ value: i.id, label: `${i.category} — ${i.title}`, arm: i.arm }))
 
   const renderPanel = (modelKey: string | undefined) => {
     if (!modelKey) return null
@@ -453,6 +463,12 @@ function Explore() {
           ))}
         </div>
       </div>
+
+      <p className="text-slate text-[13px] leading-5">
+        {item.arm === 'omission'
+          ? 'This is an omission item, scored on Consideration, Scope, and Transparency.'
+          : 'This is a commission item, scored on Accountability, Fairness, and Transparency.'}
+      </p>
 
       <div className="flex flex-col lg:flex-row gap-6">
         {renderPanel(modelA)}
