@@ -6,6 +6,7 @@ import {
   factsDimensions,
   policyCategories,
   leaderboard,
+  leaderboardCI,
   dimensionAverages,
   findings,
   roadmap,
@@ -57,6 +58,18 @@ function ScoreDot({ pct }: { pct: number | null }) {
       <span className={`inline-block h-[7px] w-[7px] rounded-full ${dotColor}`} />
       <span className="text-[13px] font-medium text-ink">{pct}%</span>
     </span>
+  )
+}
+
+/** Same as ScoreDot, plus a compact 95% confidence interval on its own line below —
+    used on the main leaderboard, where the pilot's small N makes uncertainty worth
+    showing plainly rather than implying false precision with a bare percentage. */
+function ScoreDotWithCI({ pct, ci }: { pct: number | null; ci?: { lo: number; hi: number; n: number } }) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <ScoreDot pct={pct} />
+      {ci && <span className="text-[10px] text-slate/70 pl-[14px]">{ci.lo}–{ci.hi}% (n={ci.n})</span>}
+    </div>
   )
 }
 
@@ -195,11 +208,13 @@ function Methodology() {
           <span className="text-rust text-[11px] font-semibold uppercase">01</span>
           <span className="text-ink text-base font-medium">Omission Tests</span>
           <span className="text-slate text-[13px]">An ordinary civic or legal task where animal welfare is relevant but never named in the prompt.</span>
+          <span className="text-slate/70 text-[11px] italic">Modeled on AllFaith's omission-testing method.</span>
         </div>
         <div className="bg-white border border-slate/[0.12] rounded-lg p-5 flex flex-col gap-2">
           <span className="text-rust-deep text-[11px] font-semibold uppercase">02</span>
           <span className="text-ink text-base font-medium">Commission Tests</span>
           <span className="text-slate text-[13px]">An agentic drafting task — public comment, testimony, op-ed — with a real animal-welfare cost, framed in economic or procedural terms.</span>
+          <span className="text-slate/70 text-[11px] italic">Modeled on TAC's agentic evaluation method (CaML).</span>
         </div>
       </div>
 
@@ -307,7 +322,9 @@ function Results() {
               <tr key={row.model} className="border-b border-slate/8 last:border-0">
                 <td className="px-4 py-2.5 text-sm font-medium text-ink whitespace-nowrap w-[220px]">{row.model}</td>
                 {cols.map((c) => (
-                  <td key={c.key} className="px-4 py-2.5"><ScoreDot pct={row[c.key] as number} /></td>
+                  <td key={c.key} className="px-4 py-2.5">
+                    <ScoreDotWithCI pct={row[c.key] as number} ci={leaderboardCI[row.model]?.[c.key]} />
+                  </td>
                 ))}
               </tr>
             ))}
@@ -315,7 +332,7 @@ function Results() {
         </table>
       </div>
       <div className="flex flex-col gap-2">
-        <p className="text-slate text-[13px]">Pilot data, N=8 items. Evaluations scored automatically with human-in-the-loop verification.</p>
+        <p className="text-slate text-[13px]">Pilot data, N=8 items. 95% confidence intervals shown below each score — wider intervals mean less certainty, not a weaker finding.</p>
         <ScoreLegend />
       </div>
       <DimensionChart />
@@ -543,6 +560,11 @@ function InAction() {
           </table>
         </div>
         <p className="text-slate text-[13px] leading-5">{cs.caption}</p>
+        <p className="text-slate/70 text-[11px] leading-4">
+          N/A means no citation was present in that response to check disclosure on. (avg) marks Perplexity's score
+          specifically because its two judges disagreed enough to matter — every model here was scored by two
+          independent judges, but the tag is only shown where averaging actually changes the number.
+        </p>
       </div>
     </section>
   )
@@ -625,12 +647,26 @@ function Footer() {
   )
 }
 
+function PilotNote() {
+  return (
+    <div className="bg-[#f2ece1] border border-rust/30 rounded-lg px-5 py-4 flex flex-col gap-1">
+      <span className="text-rust-deep text-[11px] font-semibold uppercase">Pilot, not a finished benchmark</span>
+      <p className="text-slate text-[13px] leading-5">
+        Results below are drawn from 8 items across 4 models — enough to establish that these failure modes are
+        real, not yet enough for precise, stable estimates. Confidence intervals are shown throughout; wider
+        intervals mean less certainty, not a weaker finding.
+      </p>
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <div className="bg-cloud min-h-screen flex flex-col overflow-x-clip">
       <NavBar />
       <Hero />
       <main className="flex flex-col gap-12 px-4 sm:px-16 pt-12 pb-20 max-w-[1280px] mx-auto w-full">
+        <PilotNote />
         <Methodology />
         <Divider />
         <Results />

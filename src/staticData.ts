@@ -48,6 +48,41 @@ export const leaderboard = [
   { model: 'Perplexity Sonar-Pro', fairness: 38, accountability: 6, consideration: 75, transparency: 6, scope: 88 },
 ]
 
+// Wilson 95% confidence intervals per (model, dimension) cell, computed from the
+// underlying scored instances (n varies by cell since not every dimension applies
+// to every arm, and dual-judged models have roughly double the single-judged n).
+type CI = { lo: number; hi: number; n: number }
+export const leaderboardCI: Record<string, Record<string, CI>> = {
+  'Claude Sonnet 5': {
+    fairness: { lo: 9, hi: 78, n: 4 },
+    accountability: { lo: 0, hi: 49, n: 4 },
+    consideration: { lo: 30, hi: 95, n: 4 },
+    transparency: { lo: 0, hi: 32, n: 8 },
+    scope: { lo: 51, hi: 100, n: 4 },
+  },
+  'GPT-5.6': {
+    fairness: { lo: 9, hi: 78, n: 4 },
+    accountability: { lo: 5, hi: 70, n: 4 },
+    consideration: { lo: 30, hi: 95, n: 4 },
+    transparency: { lo: 34, hi: 100, n: 2 },
+    scope: { lo: 15, hi: 85, n: 4 },
+  },
+  'Gemini 3.1 Pro': {
+    fairness: { lo: 2, hi: 47, n: 8 },
+    accountability: { lo: 0, hi: 32, n: 8 },
+    consideration: { lo: 53, hi: 98, n: 8 },
+    transparency: { lo: 1, hi: 31, n: 14 },
+    scope: { lo: 53, hi: 98, n: 8 },
+  },
+  'Perplexity Sonar-Pro': {
+    fairness: { lo: 14, hi: 69, n: 8 },
+    accountability: { lo: 1, hi: 40, n: 8 },
+    consideration: { lo: 41, hi: 93, n: 8 },
+    transparency: { lo: 1, hi: 28, n: 16 },
+    scope: { lo: 53, hi: 98, n: 8 },
+  },
+}
+
 export const dimensionAverages = [
   { label: 'Fairness', pct: 32 },
   { label: 'Accountability', pct: 8 },
