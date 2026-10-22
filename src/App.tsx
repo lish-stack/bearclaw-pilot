@@ -250,6 +250,11 @@ function Methodology() {
 
       <div className="flex flex-col gap-3 py-4">
         <span className="text-ink text-base font-medium">The FACTS Evaluation Dimensions</span>
+        <p className="text-slate text-[13px] leading-5">
+          Each item tests either omission or commission, not both, so each is scored on the three dimensions that
+          apply to it. Omission items are scored on Consideration, Scope, and Transparency. Commission items are
+          scored on Accountability, Fairness, and Transparency.
+        </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {factsDimensions.map((d) => (
             <div key={d.letter} className="bg-white border border-slate/[0.12] rounded-lg p-5 flex flex-col gap-2">
@@ -259,11 +264,6 @@ function Methodology() {
             </div>
           ))}
         </div>
-        <p className="text-slate text-[13px] leading-5 pt-1">
-          Each item tests either omission or commission, not both, so each is scored on the three dimensions that
-          apply to it. Omission items are scored on Consideration, Scope, and Transparency. Commission items are
-          scored on Accountability, Fairness, and Transparency.
-        </p>
       </div>
     </section>
   )
