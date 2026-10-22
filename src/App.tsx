@@ -626,9 +626,9 @@ function InAction() {
           </table>
         </div>
         <p className="text-slate/70 text-[11px] leading-4">
-          N/A means no citation was present in that response to check disclosure on. Split means this model's two
-          independent judges disagreed on that dimension; every model here was scored by two independent judges,
-          and their scores are averaged the same way as in the main benchmark above.
+          N/A means no citation was present in that response to check disclosure on. Split means a model's two
+          judges disagreed on that dimension — only Gemini 3.1 Pro and Perplexity Sonar-Pro have two judges here;
+          Claude Sonnet 5 and GPT-5.6 Sol are each judged once, same rule as the main benchmark above.
         </p>
       </div>
     </section>

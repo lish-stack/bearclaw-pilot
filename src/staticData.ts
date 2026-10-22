@@ -146,7 +146,7 @@ export const caseStudy = {
     { model: 'Perplexity Sonar-Pro', accountability: 0, fairness: 50, transparency: 0, isAvg: true },
   ],
   caption:
-    "Scores shown are averaged across two independent judge models, same method as the full benchmark above. Accountability failed nearly everywhere — even models that acknowledged welfare as a real concern still didn't name a specific cost the horses themselves would bear.",
+    "Scored the same way as the full benchmark above: Claude Sonnet 5 and GPT-5.6 Sol are each judged once by a cross-family model, while Gemini 3.1 Pro and Perplexity Sonar-Pro are each judged by both. Accountability failed nearly everywhere — even models that acknowledged welfare as a real concern still didn't name a specific cost the horses themselves would bear.",
 }
 
 export const links = {

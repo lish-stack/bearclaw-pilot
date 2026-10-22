@@ -37,9 +37,8 @@ into Vercel — it'll auto-detect the Vite framework and deploy with no extra co
   generated from the published `bearclaw-benchmark` dataset) — real prompts, real
   model responses, real judge reasoning excerpts (truncated to ~1-2 sentences for
   the accordion; full reasoning lives in the published dataset on Hugging Face).
-  Three commission-arm items don't have a Perplexity response in the underlying
-  dataset (a real gap in the original data collection, not a bug here) — the
-  toggle only shows models that actually have data for the selected scenario.
+  All 4 models have real responses for all 8 items; the toggle only shows models
+  that actually have data for the selected scenario.
 - **Colors, fonts, and component shapes**: matched to AVAIL's own `tailwind.config.js`
   token names (`ink`, `cloud`, `slate`, `rust`) so the two sites share a visual
   language, with `cloud` used as BEARCLAW's page background (the opposite of how
