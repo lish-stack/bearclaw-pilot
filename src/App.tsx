@@ -368,6 +368,11 @@ function Results() {
           entirely, not marked as a failure — which is why its applicable-instance count differs from model to
           model, unlike the other four dimensions.
         </p>
+        <p className="text-slate/70 text-[11px] leading-4">
+          Claude Sonnet 5 and GPT-5.6 Sol are each judged by one model from a different family, so their counts run
+          out of 4 (one judgment per item). Gemini 3.1 Pro and Perplexity Sonar-Pro share a family with neither
+          judge, so both judge every item, and their counts run out of 8. No model ever judges its own output.
+        </p>
         <ScoreLegend />
       </div>
       <DimensionChart />
@@ -648,6 +653,9 @@ function Findings() {
                 ))}
               </div>
             </div>
+            {'footnote' in f && f.footnote && (
+              <p className="text-slate/70 text-[11px] leading-4">{f.footnote}</p>
+            )}
           </div>
         ))}
       </div>
