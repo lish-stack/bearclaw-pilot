@@ -369,9 +369,8 @@ function Results() {
       <div className="flex flex-col gap-2">
         <p className="text-slate/70 text-[11px] leading-4">
           <span className="text-rust font-medium">*</span> Claude Sonnet 5 and GPT-5.6 Sol are each judged by one
-          model from a different family, so their counts run out of 4 (one judgment per item). Gemini 3.1 Pro and
-          Perplexity Sonar-Pro share a family with neither judge, so both judge every item, and their counts run
-          out of 8. No model ever judges its own output.
+          cross-family model, so their counts run out of 4. Gemini 3.1 Pro and Perplexity Sonar-Pro share a family
+          with neither judge, so both judge every item, running their counts out of 8.
         </p>
         <p className="text-slate/70 text-[11px] leading-4">
           <span className="text-rust font-medium">**</span> Transparency is only scored when a response makes a

@@ -65,7 +65,7 @@ export const findings = [
       },
     ],
     footnote:
-      'The denominator is 6, not 4 or 8: Claude Sonnet 5 and GPT-5.6 Sol are each judged once on this item (one cross-family judge apiece), while Gemini 3.1 Pro and Perplexity Sonar-Pro are each judged twice — 1+1+2+2 = 6 independent evaluations total.',
+      'The denominator is 6: Claude Sonnet 5 and GPT-5.6 Sol are each judged once by a cross-family model; Gemini 3.1 Pro and Perplexity Sonar-Pro are each judged twice, since neither shares a family with either judge.',
   },
   {
     stat: headlineStats.modelsUnderTenPercentAccountability.stat,
