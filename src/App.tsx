@@ -6,6 +6,7 @@ import {
   factsDimensions,
   policyCategories,
   leaderboard,
+  leaderboardCounts,
   leaderboardCI,
   dimensionAverages,
   findings,
@@ -42,12 +43,15 @@ function Divider() {
   return <div className="h-px w-full bg-slate/15 shrink-0" />
 }
 
-function ScoreDot({ pct }: { pct: number | null }) {
+/** `label` overrides the displayed text (e.g. a count like "3/4") while `pct` still drives
+    the dot color — used on the main leaderboard per the post-EAG to-do: counts, not bare
+    percentages, since a percentage overstates what a 4-item (or 8-item) cell actually shows. */
+function ScoreDot({ pct, label }: { pct: number | null; label?: string }) {
   if (pct === null) {
     return (
       <span className="inline-flex items-center gap-1.5">
         <span className="inline-block h-[7px] w-[7px] rounded-full bg-slate/50" />
-        <span className="text-[13px] font-medium text-ink">N/A</span>
+        <span className="text-[13px] font-medium text-ink">{label ?? 'N/A'}</span>
       </span>
     )
   }
@@ -56,7 +60,7 @@ function ScoreDot({ pct }: { pct: number | null }) {
   return (
     <span className="inline-flex items-center gap-1.5">
       <span className={`inline-block h-[7px] w-[7px] rounded-full ${dotColor}`} />
-      <span className="text-[13px] font-medium text-ink">{pct}%</span>
+      <span className="text-[13px] font-medium text-ink">{label ?? `${pct}%`}</span>
     </span>
   )
 }
@@ -64,11 +68,11 @@ function ScoreDot({ pct }: { pct: number | null }) {
 /** Same as ScoreDot, plus a compact 95% confidence interval on its own line below —
     used on the main leaderboard, where the pilot's small N makes uncertainty worth
     showing plainly rather than implying false precision with a bare percentage. */
-function ScoreDotWithCI({ pct, ci }: { pct: number | null; ci?: { lo: number; hi: number; n: number } }) {
+function ScoreDotWithCI({ pct, label, ci }: { pct: number | null; label?: string; ci?: { lo: number; hi: number; n: number } }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <ScoreDot pct={pct} />
-      {ci && <span className="text-[10px] text-slate/70 pl-[14px]">{ci.lo}–{ci.hi}% (n={ci.n})</span>}
+      <ScoreDot pct={pct} label={label} />
+      {ci && <span className="text-[10px] text-slate/70 pl-[14px]">{ci.lo}–{ci.hi}% CI</span>}
     </div>
   )
 }
@@ -286,7 +290,7 @@ function DimensionChart() {
               <div className="flex-1 h-5 rounded bg-[#dee3e8] overflow-hidden">
                 <div className={`h-full rounded ${bar}`} style={{ width: `${Math.max(4, d.pct)}%` }} />
               </div>
-              <span className="text-slate text-sm font-semibold w-11 text-right shrink-0">{d.pct}%</span>
+              <span className="text-slate text-sm font-semibold w-16 text-right shrink-0">{d.count}</span>
             </div>
           )
         })}
@@ -323,7 +327,11 @@ function Results() {
                 <td className="px-4 py-2.5 text-sm font-medium text-ink whitespace-nowrap w-[220px]">{row.model}</td>
                 {cols.map((c) => (
                   <td key={c.key} className="px-4 py-2.5">
-                    <ScoreDotWithCI pct={row[c.key] as number} ci={leaderboardCI[row.model]?.[c.key]} />
+                    <ScoreDotWithCI
+                      pct={row[c.key] as number}
+                      label={leaderboardCounts[row.model]?.[c.key]}
+                      ci={leaderboardCI[row.model]?.[c.key]}
+                    />
                   </td>
                 ))}
               </tr>

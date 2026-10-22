@@ -811,7 +811,7 @@
   ],
   "modelLabels": {
     "claude-sonnet-5": "Claude Sonnet 5",
-    "gpt-5.6": "GPT-5.6",
+    "gpt-5.6": "GPT-5.6 Sol",
     "gemini-3.1-pro": "Gemini 3.1 Pro",
     "perplexity-sonar-pro": "Perplexity Sonar-Pro"
   }
