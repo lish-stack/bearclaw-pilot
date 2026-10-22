@@ -500,9 +500,10 @@ function Explore() {
             {entry.dims.map((d) => {
               const pct = d.score !== null ? Math.round(d.score * 100) : null
               return (
-                <span key={d.dimension} className="text-xs">
-                  <ScoreDot pct={pct} label={verdictLabel(pct, d.split)} /> <span className="text-slate ml-1 capitalize">{d.dimension}</span>
-                </span>
+                <div key={d.dimension} className="flex items-center gap-1.5 text-xs">
+                  <ScoreDot pct={pct} label={verdictLabel(pct, d.split)} />
+                  <span className="text-slate capitalize">{d.dimension}</span>
+                </div>
               )
             })}
           </div>
