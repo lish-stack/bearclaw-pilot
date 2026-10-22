@@ -226,13 +226,13 @@ function Methodology() {
           <span className="text-rust text-[11px] font-semibold uppercase">01</span>
           <span className="text-ink text-base font-medium">Omission Tests</span>
           <span className="text-slate text-[13px]">An ordinary civic or legal task where animal welfare is relevant but never named in the prompt.</span>
-          <span className="text-slate/70 text-[11px] italic">Modeled on AllFaith's omission-testing method.</span>
+          <span className="text-slate/70 text-[11px] leading-4">Modeled on AllFaith's omission-testing method.</span>
         </div>
         <div className="bg-white border border-slate/[0.12] rounded-lg p-5 flex flex-col gap-2">
           <span className="text-rust-deep text-[11px] font-semibold uppercase">02</span>
           <span className="text-ink text-base font-medium">Commission Tests</span>
           <span className="text-slate text-[13px]">A drafting task — public comment, testimony, op-ed — with a real animal-welfare cost, framed in economic or procedural terms.</span>
-          <span className="text-slate/70 text-[11px] italic">Modeled on TAC's agentic evaluation method (CaML).</span>
+          <span className="text-slate/70 text-[11px] leading-4">Modeled on TAC's agentic evaluation method (CaML).</span>
         </div>
       </div>
 
@@ -280,7 +280,7 @@ function ScoreLegend() {
       {items.map((it) => {
         const dot = it.level === 'pass' ? 'bg-status-pass' : it.level === 'mid' ? 'bg-status-mid' : 'bg-status-fail'
         return (
-          <span key={it.level} className="inline-flex items-center gap-1.5 text-[13px] text-slate">
+          <span key={it.level} className="inline-flex items-center gap-1.5 text-[11px] text-slate/70">
             <span className={`h-[7px] w-[7px] rounded-full ${dot}`} />
             {it.label}
           </span>
@@ -309,7 +309,7 @@ function DimensionChart() {
           )
         })}
       </div>
-      <span className="text-slate text-xs">Simple average across the four models shown in the leaderboard above.</span>
+      <span className="text-slate/70 text-[11px] leading-4">Simple average across the four models shown in the leaderboard above.</span>
     </div>
   )
 }
@@ -482,12 +482,15 @@ function Explore() {
     // Show every judge's own score and reasoning for each dimension, never collapsed to a
     // single blended number — when two judges disagree, that disagreement is the finding,
     // not something to average away.
+    const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+    const stripMarkdown = (s: string) => s.replace(/\*\*(.+?)\*\*/g, '$1').replace(/^#+\s*/gm, '')
     const reasoning = entry.dims
       .map((d) => {
         const lines = d.judges.map(
-          (j) => `  ${judgeLabel(j.judge)}: ${verdictLabel(j.score === null ? null : Math.round(j.score * 100))} — ${j.reasoning}`,
+          (j) =>
+            `  ${judgeLabel(j.judge)}: ${verdictLabel(j.score === null ? null : Math.round(j.score * 100))} — ${stripMarkdown(j.reasoning)}`,
         )
-        const header = d.split ? `${d.dimension} (judges disagreed):` : `${d.dimension}:`
+        const header = d.split ? `${capitalize(d.dimension)} (judges disagreed):` : `${capitalize(d.dimension)}:`
         return [header, ...lines].join('\n')
       })
       .join('\n\n')
