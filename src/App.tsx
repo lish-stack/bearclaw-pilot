@@ -66,6 +66,19 @@ function ScoreDot({ pct, label }: { pct: number | null; label?: string }) {
   )
 }
 
+/** Verdict label for a SINGLE scored item (one Explore response, one case-study cell) —
+    never a percentage. A percentage implies a rate estimated over many instances; a
+    single item just has a verdict. `split` (judges disagreed) is passed explicitly where
+    known; otherwise an exact-50 value is treated as a split, since every dimension here
+    is otherwise binary (0 or 100) for a single judge. */
+function verdictLabel(pct: number | null, split?: boolean): string {
+  if (pct === null) return 'N/A'
+  if (split || pct === 50) return 'Split'
+  if (pct >= 100) return 'Pass'
+  if (pct <= 0) return 'Fail'
+  return 'Partial'
+}
+
 /** Same as ScoreDot, plus a compact 95% confidence interval on its own line below —
     used on the main leaderboard, where the pilot's small N makes uncertainty worth
     showing plainly rather than implying false precision with a bare percentage. */
@@ -318,7 +331,10 @@ function Results() {
             <tr className="border-b border-slate/15">
               <th className="text-left px-4 py-2.5 text-[11px] font-semibold uppercase text-slate w-[220px]">Model</th>
               {cols.map((c) => (
-                <th key={c.key} className="text-left px-4 py-2.5 text-[11px] font-semibold uppercase text-slate">{c.label}</th>
+                <th key={c.key} className="text-left px-4 py-2.5 text-[11px] font-semibold uppercase text-slate">
+                  {c.label}
+                  {c.key === 'transparency' && <sup className="text-rust ml-0.5">*</sup>}
+                </th>
               ))}
             </tr>
           </thead>
@@ -340,8 +356,18 @@ function Results() {
           </tbody>
         </table>
       </div>
-      <div className="flex flex-col gap-2">
-        <p className="text-slate text-[13px]">Pilot data, N=8 items. 95% confidence intervals shown below each score — wider intervals mean less certainty, not a weaker finding. Transparency's count is smaller than the others because it's only scored when a response makes a citation to check — if a response made no claim to verify, it's left out of the count entirely rather than marked as a failure.</p>
+      <div className="flex flex-col gap-1.5">
+        <p className="text-slate text-[13px]">
+          Pilot data, N=8 items. Each score is a raw count (pass / applicable instances), not a percentage — with
+          this few items per cell, a percentage would imply more precision than the data supports. The range below
+          each score is a 95% confidence interval: wider ranges mean less certainty, not a weaker finding.
+        </p>
+        <p className="text-slate text-[13px]">
+          <span className="text-rust font-medium">*</span> Transparency is only scored when a response makes a
+          citation or factual claim to check. A response with nothing to verify is excluded from the count
+          entirely, not marked as a failure — which is why its applicable-instance count differs from model to
+          model, unlike the other four dimensions.
+        </p>
         <ScoreLegend />
       </div>
       <DimensionChart />
@@ -458,7 +484,9 @@ function Explore() {
     // not something to average away.
     const reasoning = entry.dims
       .map((d) => {
-        const lines = d.judges.map((j) => `  ${judgeLabel(j.judge)}: ${j.score === null ? 'N/A' : Math.round(j.score * 100) + '%'} — ${j.reasoning}`)
+        const lines = d.judges.map(
+          (j) => `  ${judgeLabel(j.judge)}: ${verdictLabel(j.score === null ? null : Math.round(j.score * 100))} — ${j.reasoning}`,
+        )
         const header = d.split ? `${d.dimension} (judges disagreed):` : `${d.dimension}:`
         return [header, ...lines].join('\n')
       })
@@ -469,15 +497,14 @@ function Explore() {
           <span className="text-ink text-base font-medium">{exploreData.modelLabels[modelKey]} Output</span>
           <p className="text-slate text-[15px] leading-6 max-h-64 overflow-y-auto">{entry.response}</p>
           <div className="flex flex-wrap gap-3 pt-1">
-            {entry.dims.map((d) => (
-              <span key={d.dimension} className="text-xs">
-                <ScoreDot pct={d.score !== null ? Math.round(d.score * 100) : null} />{' '}
-                <span className="text-slate ml-1 capitalize">
-                  {d.dimension}
-                  {d.split ? ' (split)' : ''}
+            {entry.dims.map((d) => {
+              const pct = d.score !== null ? Math.round(d.score * 100) : null
+              return (
+                <span key={d.dimension} className="text-xs">
+                  <ScoreDot pct={pct} label={verdictLabel(pct, d.split)} /> <span className="text-slate ml-1 capitalize">{d.dimension}</span>
                 </span>
-              </span>
-            ))}
+              )
+            })}
           </div>
         </div>
         <Accordion title="Judge reasoning" body={reasoning || 'No reasoning captured for this response.'} />
@@ -575,9 +602,9 @@ function InAction() {
               {cs.miniTable.map((row) => (
                 <tr key={row.model} className="border-b border-slate/8 last:border-0">
                   <td className="px-4 py-2.5 text-sm font-medium text-ink whitespace-nowrap w-[220px]">{row.model}</td>
-                  <td className="px-4 py-2.5"><ScoreDot pct={row.accountability} />{row.isAvg && <span className="text-slate text-xs ml-1">(avg)</span>}</td>
-                  <td className="px-4 py-2.5"><ScoreDot pct={row.fairness} />{row.isAvg && <span className="text-slate text-xs ml-1">(avg)</span>}</td>
-                  <td className="px-4 py-2.5"><ScoreDot pct={row.transparency} /></td>
+                  <td className="px-4 py-2.5"><ScoreDot pct={row.accountability} label={verdictLabel(row.accountability)} /></td>
+                  <td className="px-4 py-2.5"><ScoreDot pct={row.fairness} label={verdictLabel(row.fairness)} /></td>
+                  <td className="px-4 py-2.5"><ScoreDot pct={row.transparency} label={verdictLabel(row.transparency)} /></td>
                 </tr>
               ))}
             </tbody>
@@ -585,9 +612,9 @@ function InAction() {
         </div>
         <p className="text-slate text-[13px] leading-5">{cs.caption}</p>
         <p className="text-slate/70 text-[11px] leading-4">
-          N/A means no citation was present in that response to check disclosure on. (avg) marks Perplexity's score
-          specifically because its two judges disagreed enough to matter — every model here was scored by two
-          independent judges, but the tag is only shown where averaging actually changes the number.
+          N/A means no citation was present in that response to check disclosure on. Split means this model's two
+          independent judges disagreed on that dimension; every model here was scored by two independent judges,
+          and their scores are averaged the same way as in the main benchmark above.
         </p>
       </div>
     </section>
