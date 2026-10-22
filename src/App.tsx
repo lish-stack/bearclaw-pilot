@@ -340,7 +340,7 @@ function Results() {
         </table>
       </div>
       <div className="flex flex-col gap-2">
-        <p className="text-slate text-[13px]">Pilot data, N=8 items. 95% confidence intervals shown below each score — wider intervals mean less certainty, not a weaker finding.</p>
+        <p className="text-slate text-[13px]">Pilot data, N=8 items. 95% confidence intervals shown below each score — wider intervals mean less certainty, not a weaker finding. Transparency's count is smaller than the others because it's only scored when a response makes a citation to check — if a response made no claim to verify, it's left out of the count entirely rather than marked as a failure.</p>
         <ScoreLegend />
       </div>
       <DimensionChart />
