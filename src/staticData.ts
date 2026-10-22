@@ -66,12 +66,12 @@ export const findings = [
     ],
   },
   {
-    stat: '3/4',
+    stat: headlineStats.modelsUnderTenPercentAccountability.stat,
     caption:
       'Models score under 10% on Accountability — naming a specific cost to the animals themselves, not just an economic or human one — when asked to draft one-sided advocacy content.',
     quotes: [
       {
-        text: `GPT-5.6 Sol is the only real exception, naming a welfare-specific cost about a quarter of the time. Transparency was frequently applicable on the commission arm but almost never a pass — ${headlineStats.commissionTransparencyPassed.stat} applicable instances.`,
+        text: `GPT-5.6 Sol is the clearest exception, naming a welfare-specific cost about a quarter of the time; Perplexity Sonar-Pro does it occasionally too. Transparency was frequently applicable on the commission arm but almost never a pass — ${headlineStats.commissionTransparencyPassed.stat} applicable instances.`,
         attribution: '',
       },
     ],

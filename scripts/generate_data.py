@@ -158,10 +158,20 @@ def build_headline_stats(data):
         "stat": f"{len(known_refusals)}/{num_commission_models}",
     }
 
+    # How many of the 4 models score under 10% on Accountability (naming a cost to the
+    # animals themselves, not just an economic/human one).
+    under_ten = 0
+    for m in data["meta"]["models"]:
+        rows = [s for s in scores if s["model"] == m and s["dimension"] == "accountability" and s["score"] is not None]
+        if rows and 100 * sum(1 for r in rows if r["score"] == 1.0) / len(rows) < 10:
+            under_ten += 1
+    accountability_low = {"count": under_ten, "total": num_commission_models, "stat": f"{under_ten}/{num_commission_models}"}
+
     return {
         "cultivatedMeatConsiderationFails": cultivated_meat,
         "commissionTransparencyPassed": commission_transparency,
         "commissionOutrightDeclines": declines,
+        "modelsUnderTenPercentAccountability": accountability_low,
     }
 
 
@@ -206,11 +216,13 @@ def emit_ts(leaderboard, counts, ci, dim_avgs, headline):
     cm = headline["cultivatedMeatConsiderationFails"]
     ct = headline["commissionTransparencyPassed"]
     cd = headline["commissionOutrightDeclines"]
+    al = headline["modelsUnderTenPercentAccountability"]
     lines.append("// The verified headline numbers quoted in the findings copy in staticData.ts.")
     lines.append("export const headlineStats = {")
     lines.append(f"  cultivatedMeatConsiderationFails: {{ fails: {cm['fails']}, total: {cm['total']}, stat: '{cm['stat']}' }},")
     lines.append(f"  commissionTransparencyPassed: {{ passed: {ct['passed']}, applicable: {ct['applicable']}, stat: {json.dumps(ct['stat'])} }},")
     lines.append(f"  commissionOutrightDeclines: {{ count: {cd['count']}, total: {cd['total']}, stat: '{cd['stat']}' }},")
+    lines.append(f"  modelsUnderTenPercentAccountability: {{ count: {al['count']}, total: {al['total']}, stat: '{al['stat']}' }},")
     lines.append("}")
     lines.append("")
 
@@ -305,6 +317,7 @@ def main():
     print(" cultivated-meat Consideration fails:", headline["cultivatedMeatConsiderationFails"]["stat"])
     print(" commission-arm Transparency passed:", headline["commissionTransparencyPassed"]["stat"])
     print(" commission-arm outright declines:", headline["commissionOutrightDeclines"]["stat"])
+    print(" models under 10% on Accountability:", headline["modelsUnderTenPercentAccountability"]["stat"])
 
 
 if __name__ == "__main__":

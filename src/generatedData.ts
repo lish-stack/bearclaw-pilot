@@ -8,14 +8,14 @@ export const leaderboard = [
   { model: "Claude Sonnet 5", fairness: 75, accountability: 0, consideration: 75, transparency: 0, scope: 100 },
   { model: "GPT-5.6 Sol", fairness: 75, accountability: 25, consideration: 75, transparency: 100, scope: 50 },
   { model: "Gemini 3.1 Pro", fairness: 25, accountability: 0, consideration: 88, transparency: 7, scope: 88 },
-  { model: "Perplexity Sonar-Pro", fairness: 0, accountability: 0, consideration: 75, transparency: 0, scope: 88 },
+  { model: "Perplexity Sonar-Pro", fairness: 62, accountability: 12, consideration: 75, transparency: 6, scope: 88 },
 ]
 
 export const leaderboardCounts: Record<string, Record<string, string>> = {
   'Claude Sonnet 5': { fairness: '3/4', accountability: '0/4', consideration: '3/4', transparency: '0/8', scope: '4/4' },
   'GPT-5.6 Sol': { fairness: '3/4', accountability: '1/4', consideration: '3/4', transparency: '2/2', scope: '2/4' },
   'Gemini 3.1 Pro': { fairness: '2/8', accountability: '0/8', consideration: '7/8', transparency: '1/14', scope: '7/8' },
-  'Perplexity Sonar-Pro': { fairness: '0/8', accountability: '0/8', consideration: '6/8', transparency: '0/10', scope: '7/8' },
+  'Perplexity Sonar-Pro': { fairness: '5/8', accountability: '1/8', consideration: '6/8', transparency: '1/16', scope: '7/8' },
 }
 
 export const leaderboardCI: Record<string, Record<string, CI>> = {
@@ -41,25 +41,26 @@ export const leaderboardCI: Record<string, Record<string, CI>> = {
     scope: { lo: 53, hi: 98, n: 8 },
   },
   'Perplexity Sonar-Pro': {
-    fairness: { lo: 0, hi: 32, n: 8 },
-    accountability: { lo: 0, hi: 32, n: 8 },
+    fairness: { lo: 31, hi: 86, n: 8 },
+    accountability: { lo: 2, hi: 47, n: 8 },
     consideration: { lo: 41, hi: 93, n: 8 },
-    transparency: { lo: 0, hi: 28, n: 10 },
+    transparency: { lo: 1, hi: 28, n: 16 },
     scope: { lo: 53, hi: 98, n: 8 },
   },
 }
 
 export const dimensionAverages = [
-  { label: 'Fairness', pct: 33, count: '8/24' },
-  { label: 'Accountability', pct: 4, count: '1/24' },
+  { label: 'Fairness', pct: 54, count: '13/24' },
+  { label: 'Accountability', pct: 8, count: '2/24' },
   { label: 'Consideration', pct: 79, count: '19/24' },
-  { label: 'Transparency', pct: 9, count: '3/34' },
+  { label: 'Transparency', pct: 10, count: '4/40' },
   { label: 'Scope', pct: 83, count: '20/24' },
 ]
 
 // The verified headline numbers quoted in the findings copy in staticData.ts.
 export const headlineStats = {
   cultivatedMeatConsiderationFails: { fails: 5, total: 6, stat: '5/6' },
-  commissionTransparencyPassed: { passed: 0, applicable: 12, stat: "0 of 12" },
+  commissionTransparencyPassed: { passed: 1, applicable: 18, stat: "1 of 18" },
   commissionOutrightDeclines: { count: 1, total: 4, stat: '1/4' },
+  modelsUnderTenPercentAccountability: { count: 2, total: 4, stat: '2/4' },
 }
