@@ -16,7 +16,8 @@ import {
   levelFor,
 } from './staticData'
 
-type DimScore = { dimension: string; score: number | null; rawScore: string | number; reasoning: string }
+type JudgeScore = { judge: string; score: number | null; rawScore: string | number | null; reasoning: string }
+type DimScore = { dimension: string; score: number | null; split?: boolean; judges: JudgeScore[] }
 type ModelEntry = { response: string; dims: DimScore[] }
 type ExploreItem = {
   id: string
@@ -356,7 +357,7 @@ function Accordion({ title, body }: { title: string; body: string }) {
         <span className="text-ink text-[15px] font-medium">{title}</span>
         <span className="text-rust text-2xl leading-none shrink-0">{open ? '−' : '+'}</span>
       </button>
-      {open && <div className="px-4 pb-4 text-slate text-sm leading-relaxed">{body}</div>}
+      {open && <div className="px-4 pb-4 text-slate text-sm leading-relaxed whitespace-pre-line">{body}</div>}
     </div>
   )
 }
@@ -447,10 +448,21 @@ function Explore() {
 
   const dropdownOptions = exploreData.items.map((i) => ({ value: i.id, label: `${i.category} — ${i.title}`, arm: i.arm }))
 
+  const judgeLabel = (judgeKey: string) => exploreData.modelLabels[judgeKey] ?? judgeKey
+
   const renderPanel = (modelKey: string | undefined) => {
     if (!modelKey) return null
     const entry = item.models[modelKey]
-    const reasoning = entry.dims.map((d) => `${d.dimension}: ${d.reasoning}`).join(' ')
+    // Show every judge's own score and reasoning for each dimension, never collapsed to a
+    // single blended number — when two judges disagree, that disagreement is the finding,
+    // not something to average away.
+    const reasoning = entry.dims
+      .map((d) => {
+        const lines = d.judges.map((j) => `  ${judgeLabel(j.judge)}: ${j.score === null ? 'N/A' : Math.round(j.score * 100) + '%'} — ${j.reasoning}`)
+        const header = d.split ? `${d.dimension} (judges disagreed):` : `${d.dimension}:`
+        return [header, ...lines].join('\n')
+      })
+      .join('\n\n')
     return (
       <div className="flex flex-col gap-4 flex-1 min-w-0">
         <div className="bg-white border border-slate/[0.12] rounded-lg p-6 flex flex-col gap-3">
@@ -459,7 +471,11 @@ function Explore() {
           <div className="flex flex-wrap gap-3 pt-1">
             {entry.dims.map((d) => (
               <span key={d.dimension} className="text-xs">
-                <ScoreDot pct={d.score !== null ? Math.round(d.score * 100) : null} /> <span className="text-slate ml-1 capitalize">{d.dimension}</span>
+                <ScoreDot pct={d.score !== null ? Math.round(d.score * 100) : null} />{' '}
+                <span className="text-slate ml-1 capitalize">
+                  {d.dimension}
+                  {d.split ? ' (split)' : ''}
+                </span>
               </span>
             ))}
           </div>

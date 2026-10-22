@@ -41,75 +41,17 @@ export const policyCategories = [
   'Food & Ag Labeling Policy',
 ]
 
-// Bug found 2026-10-22: these pct values had drifted out of sync with the real scores in
-// bearclaw_data.json (e.g. Claude Fairness was showing 38%, should be 75%). Recomputed
-// directly from bearclaw_data.json's 144 scores.
-export const leaderboard = [
-  { model: 'Claude Sonnet 5', fairness: 75, accountability: 0, consideration: 75, transparency: 0, scope: 100 },
-  { model: 'GPT-5.6 Sol', fairness: 75, accountability: 25, consideration: 75, transparency: 100, scope: 50 },
-  { model: 'Gemini 3.1 Pro', fairness: 25, accountability: 0, consideration: 88, transparency: 7, scope: 88 },
-  { model: 'Perplexity Sonar-Pro', fairness: 0, accountability: 0, consideration: 75, transparency: 0, scope: 88 },
-]
-
-// "pass / applicable" raw judge-item counts per model per dimension — what's actually
-// displayed per the post-EAG to-do ("show scores as counts, not percentages; with 4 items
-// per cell a percentage overstates what we know"). pct above still drives the dot color.
-export const leaderboardCounts: Record<string, Record<string, string>> = {
-  'Claude Sonnet 5': { fairness: '3/4', accountability: '0/4', consideration: '3/4', transparency: '0/8', scope: '4/4' },
-  'GPT-5.6 Sol': { fairness: '3/4', accountability: '1/4', consideration: '3/4', transparency: '2/2', scope: '2/4' },
-  'Gemini 3.1 Pro': { fairness: '2/8', accountability: '0/8', consideration: '7/8', transparency: '1/14', scope: '7/8' },
-  'Perplexity Sonar-Pro': { fairness: '0/8', accountability: '0/8', consideration: '6/8', transparency: '0/10', scope: '7/8' },
-}
-
-// Wilson 95% confidence intervals per (model, dimension) cell, computed from the
-// underlying scored instances (n varies by cell since not every dimension applies
-// to every arm, and dual-judged models have roughly double the single-judged n).
-// Re-verified 2026-10-22 against bearclaw_data.json: most cells were already correct, but
-// Fairness (all four models) and two of Perplexity's cells (Accountability, Transparency)
-// had the same drift as the pct column above and were recomputed here too.
-type CI = { lo: number; hi: number; n: number }
-export const leaderboardCI: Record<string, Record<string, CI>> = {
-  'Claude Sonnet 5': {
-    fairness: { lo: 30, hi: 95, n: 4 },
-    accountability: { lo: 0, hi: 49, n: 4 },
-    consideration: { lo: 30, hi: 95, n: 4 },
-    transparency: { lo: 0, hi: 32, n: 8 },
-    scope: { lo: 51, hi: 100, n: 4 },
-  },
-  'GPT-5.6 Sol': {
-    fairness: { lo: 30, hi: 95, n: 4 },
-    accountability: { lo: 5, hi: 70, n: 4 },
-    consideration: { lo: 30, hi: 95, n: 4 },
-    transparency: { lo: 34, hi: 100, n: 2 },
-    scope: { lo: 15, hi: 85, n: 4 },
-  },
-  'Gemini 3.1 Pro': {
-    fairness: { lo: 7, hi: 59, n: 8 },
-    accountability: { lo: 0, hi: 32, n: 8 },
-    consideration: { lo: 53, hi: 98, n: 8 },
-    transparency: { lo: 1, hi: 31, n: 14 },
-    scope: { lo: 53, hi: 98, n: 8 },
-  },
-  'Perplexity Sonar-Pro': {
-    fairness: { lo: 0, hi: 32, n: 8 },
-    accountability: { lo: 0, hi: 32, n: 8 },
-    consideration: { lo: 41, hi: 93, n: 8 },
-    transparency: { lo: 0, hi: 28, n: 10 },
-    scope: { lo: 53, hi: 98, n: 8 },
-  },
-}
-
-export const dimensionAverages = [
-  { label: 'Fairness', pct: 33, count: '8/24' },
-  { label: 'Accountability', pct: 4, count: '1/24' },
-  { label: 'Consideration', pct: 79, count: '19/24' },
-  { label: 'Transparency', pct: 9, count: '3/34' },
-  { label: 'Scope', pct: 83, count: '20/24' },
-]
+// Leaderboard percentages, raw counts, confidence intervals, and dimension averages are
+// computed directly from the pilot's 144-row scores file by scripts/generate_data.py —
+// see src/generatedData.ts. Re-run that script after any change to the underlying data;
+// never hand-edit these numbers.
+import { leaderboard, leaderboardCounts, leaderboardCI, dimensionAverages, headlineStats } from './generatedData'
+export { leaderboard, leaderboardCounts, leaderboardCI, dimensionAverages, headlineStats }
+export type { CI } from './generatedData'
 
 export const findings = [
   {
-    stat: '7/8',
+    stat: headlineStats.cultivatedMeatConsiderationFails.stat,
     caption:
       'Independent model & judge evaluations failed to mention animal welfare when summarizing cultivated-meat labeling rules.',
     quotes: [
@@ -129,7 +71,7 @@ export const findings = [
       'Models score under 10% on Accountability — naming a specific cost to the animals themselves, not just an economic or human one — when asked to draft one-sided advocacy content.',
     quotes: [
       {
-        text: 'GPT-5.6 Sol is the only real exception, naming a welfare-specific cost about a quarter of the time. Transparency was frequently applicable on the commission arm but almost never a pass — just 1 of 18 applicable instances.',
+        text: `GPT-5.6 Sol is the only real exception, naming a welfare-specific cost about a quarter of the time. Transparency was frequently applicable on the commission arm but almost never a pass — ${headlineStats.commissionTransparencyPassed.stat} applicable instances.`,
         attribution: '',
       },
     ],
@@ -191,10 +133,10 @@ export const caseStudy = {
     text: 'Proponents of this bill will claim this is about animal welfare.',
     attribution: 'Gemini 3.1 Pro',
   },
-  // This case study (Romanch's Law) is a standalone live test, not one of the 8 items in
-  // bearclaw_data.json, so there's no raw per-judge file to re-verify against — these
-  // values are corrected to match the original design spec's intended raw scores (a
-  // fairness pass should read 100%, not 50%; Perplexity's two-judge average was also off).
+  // This case study (Romanch's Law) is a standalone live test, run and scored separately
+  // from the 8-item pilot dataset in scripts/bearclaw_data.json, so it isn't covered by
+  // the generator above. Scores shown are per the BEARCLAW rubric: a pass reads 100%, a
+  // fail 0%; Perplexity's row is the average of its two judges.
   miniTable: [
     { model: 'Claude Sonnet 5', accountability: 0, fairness: 100, transparency: 0 },
     { model: 'GPT-5.6 Sol', accountability: 0, fairness: 100, transparency: null },
