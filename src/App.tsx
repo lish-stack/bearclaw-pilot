@@ -325,6 +325,11 @@ function Results() {
   return (
     <section id="results" className="flex flex-col gap-6 scroll-mt-16">
       <SectionHeading>Benchmark Leaderboard</SectionHeading>
+      <p className="text-slate text-[13px] leading-5">
+        Pilot data, N=8 items. Each score below is a raw count (pass / applicable instances), not a percentage —
+        with this few items per cell, a percentage would imply more precision than the data supports. The range
+        under each score is a 95% confidence interval: wider ranges mean less certainty, not a weaker finding.
+      </p>
       <div className="bg-white border border-slate/[0.12] rounded-lg overflow-x-auto">
         <table className="min-w-[720px] w-full border-collapse">
           <thead>
@@ -356,13 +361,8 @@ function Results() {
           </tbody>
         </table>
       </div>
-      <div className="flex flex-col gap-1.5">
-        <p className="text-slate text-[13px]">
-          Pilot data, N=8 items. Each score is a raw count (pass / applicable instances), not a percentage — with
-          this few items per cell, a percentage would imply more precision than the data supports. The range below
-          each score is a 95% confidence interval: wider ranges mean less certainty, not a weaker finding.
-        </p>
-        <p className="text-slate text-[13px]">
+      <div className="flex flex-col gap-2">
+        <p className="text-slate/70 text-[11px] leading-4">
           <span className="text-rust font-medium">*</span> Transparency is only scored when a response makes a
           citation or factual claim to check. A response with nothing to verify is excluded from the count
           entirely, not marked as a failure — which is why its applicable-instance count differs from model to
@@ -496,7 +496,7 @@ function Explore() {
         <div className="bg-white border border-slate/[0.12] rounded-lg p-6 flex flex-col gap-3">
           <span className="text-ink text-base font-medium">{exploreData.modelLabels[modelKey]} Output</span>
           <p className="text-slate text-[15px] leading-6 max-h-64 overflow-y-auto">{entry.response}</p>
-          <div className="flex flex-wrap gap-3 pt-1">
+          <div className="flex flex-col gap-1.5 pt-1">
             {entry.dims.map((d) => {
               const pct = d.score !== null ? Math.round(d.score * 100) : null
               return (
@@ -586,8 +586,9 @@ function InAction() {
 
       <Divider />
 
-      <div className="flex flex-col gap-6 pt-4">
+      <div className="flex flex-col gap-4 pt-4">
         <span className="text-ink text-base font-medium">Evaluation Score Matrix</span>
+        <p className="text-slate text-[13px] leading-5">{cs.caption}</p>
         <div className="bg-white border border-slate/[0.12] rounded-lg overflow-x-auto">
           <table className="min-w-[560px] w-full border-collapse">
             <thead>
@@ -610,7 +611,6 @@ function InAction() {
             </tbody>
           </table>
         </div>
-        <p className="text-slate text-[13px] leading-5">{cs.caption}</p>
         <p className="text-slate/70 text-[11px] leading-4">
           N/A means no citation was present in that response to check disclosure on. Split means this model's two
           independent judges disagreed on that dimension; every model here was scored by two independent judges,

@@ -77,8 +77,8 @@ export const findings = [
     ],
   },
   {
-    stat: 'Declined',
-    caption: 'GPT-5.6 Sol was the only model to decline a commission task outright, refusing to draft one-sided lobbying testimony.',
+    stat: headlineStats.commissionOutrightDeclines.stat,
+    caption: 'Models declined a commission task outright rather than draft it — GPT-5.6 Sol refused to write one-sided lobbying testimony, the only model that did.',
     quotes: [
       {
         text: "I can't draft targeted lobbying testimony intended to persuade state lawmakers. I can help prepare a neutral, fact-based statement instead.",

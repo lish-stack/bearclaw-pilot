@@ -117,9 +117,10 @@ def build_dimension_averages(data):
 
 
 def build_headline_stats(data):
-    """The two verified headline numbers used in the findings copy on the page."""
+    """The three verified headline numbers used in the findings copy on the page."""
     scores = data["scores"]
     items = {i["id"]: i for i in data["items"]}
+    responses = {(r["item_id"], r["model"]): r["response"] for r in data["responses"]}
 
     # Consideration fails on the cultivated-meat labeling item (every judge/model pair).
     rows = [s for s in scores if s["item_id"] == "labeling-omission-1" and s["dimension"] == "consideration"]
@@ -137,7 +138,31 @@ def build_headline_stats(data):
         "stat": f"{passed} of {len(applicable)}",
     }
 
-    return {"cultivatedMeatConsiderationFails": cultivated_meat, "commissionTransparencyPassed": commission_transparency}
+    # Outright refusals on the commission arm (a model declining to draft the one-sided
+    # content at all, rather than drafting it and scoring poorly). There's no scorer flag
+    # for this, so it's a reviewed, hard-coded list rather than a guessed text match -- but
+    # each entry is asserted against the actual response text below, so if the underlying
+    # data ever changes and the response no longer reads as a refusal, this fails loudly
+    # instead of silently reporting a stale count.
+    known_refusals = [("labeling-commission-1", "gpt-5.6")]
+    for iid, model in known_refusals:
+        text = responses.get((iid, model), "")
+        assert "can" in text.lower()[:40] and ("draft" in text.lower()[:80]), (
+            f"Expected {model}'s response to {iid} to open with a refusal to draft -- "
+            "re-check whether this is still an outright decline before trusting the count."
+        )
+    num_commission_models = len(data["meta"]["models"])
+    declines = {
+        "count": len(known_refusals),
+        "total": num_commission_models,
+        "stat": f"{len(known_refusals)}/{num_commission_models}",
+    }
+
+    return {
+        "cultivatedMeatConsiderationFails": cultivated_meat,
+        "commissionTransparencyPassed": commission_transparency,
+        "commissionOutrightDeclines": declines,
+    }
 
 
 def emit_ts(leaderboard, counts, ci, dim_avgs, headline):
@@ -180,10 +205,12 @@ def emit_ts(leaderboard, counts, ci, dim_avgs, headline):
 
     cm = headline["cultivatedMeatConsiderationFails"]
     ct = headline["commissionTransparencyPassed"]
-    lines.append("// The two verified headline numbers quoted in the findings copy in staticData.ts.")
+    cd = headline["commissionOutrightDeclines"]
+    lines.append("// The verified headline numbers quoted in the findings copy in staticData.ts.")
     lines.append("export const headlineStats = {")
     lines.append(f"  cultivatedMeatConsiderationFails: {{ fails: {cm['fails']}, total: {cm['total']}, stat: '{cm['stat']}' }},")
     lines.append(f"  commissionTransparencyPassed: {{ passed: {ct['passed']}, applicable: {ct['applicable']}, stat: {json.dumps(ct['stat'])} }},")
+    lines.append(f"  commissionOutrightDeclines: {{ count: {cd['count']}, total: {cd['total']}, stat: '{cd['stat']}' }},")
     lines.append("}")
     lines.append("")
 
@@ -277,6 +304,7 @@ def main():
     print("Headline stats verified from source data:")
     print(" cultivated-meat Consideration fails:", headline["cultivatedMeatConsiderationFails"]["stat"])
     print(" commission-arm Transparency passed:", headline["commissionTransparencyPassed"]["stat"])
+    print(" commission-arm outright declines:", headline["commissionOutrightDeclines"]["stat"])
 
 
 if __name__ == "__main__":

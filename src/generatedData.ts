@@ -57,8 +57,9 @@ export const dimensionAverages = [
   { label: 'Scope', pct: 83, count: '20/24' },
 ]
 
-// The two verified headline numbers quoted in the findings copy in staticData.ts.
+// The verified headline numbers quoted in the findings copy in staticData.ts.
 export const headlineStats = {
   cultivatedMeatConsiderationFails: { fails: 5, total: 6, stat: '5/6' },
   commissionTransparencyPassed: { passed: 0, applicable: 12, stat: "0 of 12" },
+  commissionOutrightDeclines: { count: 1, total: 4, stat: '1/4' },
 }
