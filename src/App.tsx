@@ -338,7 +338,7 @@ function Results() {
               {cols.map((c) => (
                 <th key={c.key} className="text-left px-4 py-2.5 text-[11px] font-semibold uppercase text-slate">
                   {c.label}
-                  {c.key === 'transparency' && <sup className="text-rust ml-0.5">*</sup>}
+                  {c.key === 'transparency' && <sup className="text-rust ml-0.5">**</sup>}
                 </th>
               ))}
             </tr>
@@ -346,7 +346,12 @@ function Results() {
           <tbody>
             {leaderboard.map((row) => (
               <tr key={row.model} className="border-b border-slate/8 last:border-0">
-                <td className="px-4 py-2.5 text-sm font-medium text-ink whitespace-nowrap w-[220px]">{row.model}</td>
+                <td className="px-4 py-2.5 text-sm font-medium text-ink whitespace-nowrap w-[220px]">
+                  {row.model}
+                  {(row.model === 'Claude Sonnet 5' || row.model === 'GPT-5.6 Sol') && (
+                    <sup className="text-rust ml-0.5">*</sup>
+                  )}
+                </td>
                 {cols.map((c) => (
                   <td key={c.key} className="px-4 py-2.5">
                     <ScoreDotWithCI
@@ -363,15 +368,16 @@ function Results() {
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-slate/70 text-[11px] leading-4">
-          <span className="text-rust font-medium">*</span> Transparency is only scored when a response makes a
+          <span className="text-rust font-medium">*</span> Claude Sonnet 5 and GPT-5.6 Sol are each judged by one
+          model from a different family, so their counts run out of 4 (one judgment per item). Gemini 3.1 Pro and
+          Perplexity Sonar-Pro share a family with neither judge, so both judge every item, and their counts run
+          out of 8. No model ever judges its own output.
+        </p>
+        <p className="text-slate/70 text-[11px] leading-4">
+          <span className="text-rust font-medium">**</span> Transparency is only scored when a response makes a
           citation or factual claim to check. A response with nothing to verify is excluded from the count
           entirely, not marked as a failure — which is why its applicable-instance count differs from model to
           model, unlike the other four dimensions.
-        </p>
-        <p className="text-slate/70 text-[11px] leading-4">
-          Claude Sonnet 5 and GPT-5.6 Sol are each judged by one model from a different family, so their counts run
-          out of 4 (one judgment per item). Gemini 3.1 Pro and Perplexity Sonar-Pro share a family with neither
-          judge, so both judge every item, and their counts run out of 8. No model ever judges its own output.
         </p>
         <ScoreLegend />
       </div>
