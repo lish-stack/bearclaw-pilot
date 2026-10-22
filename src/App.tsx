@@ -47,12 +47,12 @@ function Divider() {
 /** `label` overrides the displayed text (e.g. a count like "3/4") while `pct` still drives
     the dot color — used on the main leaderboard per the post-EAG to-do: counts, not bare
     percentages, since a percentage overstates what a 4-item (or 8-item) cell actually shows. */
-function ScoreDot({ pct, label }: { pct: number | null; label?: string }) {
+function ScoreDot({ pct, label, textClassName = 'text-[13px]' }: { pct: number | null; label?: string; textClassName?: string }) {
   if (pct === null) {
     return (
       <span className="inline-flex items-center gap-1.5">
         <span className="inline-block h-[7px] w-[7px] rounded-full bg-slate/50" />
-        <span className="text-[13px] font-medium text-ink">{label ?? 'N/A'}</span>
+        <span className={`${textClassName} font-medium text-ink`}>{label ?? 'N/A'}</span>
       </span>
     )
   }
@@ -61,7 +61,7 @@ function ScoreDot({ pct, label }: { pct: number | null; label?: string }) {
   return (
     <span className="inline-flex items-center gap-1.5">
       <span className={`inline-block h-[7px] w-[7px] rounded-full ${dotColor}`} />
-      <span className="text-[13px] font-medium text-ink">{label ?? `${pct}%`}</span>
+      <span className={`${textClassName} font-medium text-ink`}>{label ?? `${pct}%`}</span>
     </span>
   )
 }
@@ -514,9 +514,9 @@ function Explore() {
             {entry.dims.map((d) => {
               const pct = d.score !== null ? Math.round(d.score * 100) : null
               return (
-                <div key={d.dimension} className="flex items-center gap-1.5 text-xs">
-                  <ScoreDot pct={pct} label={verdictLabel(pct, d.split)} />
-                  <span className="text-slate capitalize">{d.dimension}</span>
+                <div key={d.dimension} className="flex items-center gap-1.5">
+                  <ScoreDot pct={pct} label={verdictLabel(pct, d.split)} textClassName="text-xs" />
+                  <span className="text-slate text-xs capitalize">{d.dimension}</span>
                 </div>
               )
             })}
